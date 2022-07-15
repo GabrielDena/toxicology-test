@@ -1,4 +1,4 @@
-import Sample from '../models/sample/sample.entity';
+import Sample from '../models/sample.entity';
 import { myDataSource } from '../app-data-source';
 
 export const sampleRepository = myDataSource.getRepository(Sample).extend({

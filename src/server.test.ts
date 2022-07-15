@@ -5,7 +5,16 @@ const SampleController = require('./controllers/sample.controller');
 
 
 describe("Testagem da inserção e consulta de amostras", () => {
-	test('Adiciona uma amostra', () => {
+
+	beforeAll(() => {
+
+	})
+
+	afterAll(() => {
+
+	})
+
+	it('Adiciona uma amostra', () => {
 		const sample = {
 			sample_code: "02383322",
 			cocaine: 0.678,

@@ -1,5 +1,7 @@
 import { DataSource } from 'typeorm';
-import Sample from './models/sample/sample.entity';
+import Entities from './models';
+
+const entities = new Entities();
 
 export const myDataSource = new DataSource({
 	type: "mysql",
@@ -8,7 +10,7 @@ export const myDataSource = new DataSource({
 	username: "root",
 	password: "root",
 	database: "toxicology-test",
-	entities: [Sample],
+	entities: [...entities.entities],
 	logging: true,
 	synchronize: true
 })
