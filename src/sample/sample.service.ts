@@ -46,12 +46,10 @@ export class SampleService {
 
 		const response: {
 			sample_code: string,
-			created_at: string,
 			results: boolean,
 			positive_drugs: string[]
 		} = {
 			sample_code: saved.sample_code,
-			created_at: saved.created_at,
 			results: saved.result,
 			positive_drugs: results
 		}
@@ -64,7 +62,6 @@ export class SampleService {
 			const results = await this.substanceService.result(sample);
 			return {
 				sample_code: sample.sample_code,
-				created_at: sample.created_at,
 				results: sample.result,
 				positive_drugs: results
 			}
@@ -74,10 +71,6 @@ export class SampleService {
 
 	findOne(sample_code: string): Promise<Sample> {
 		return this.sampleRepository.findOneBy({ sample_code });
-	}
-
-	async remove(sample_code: string): Promise<void> {
-		await this.sampleRepository.delete(sample_code);
 	}
 
 	private formatDate() {

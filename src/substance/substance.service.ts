@@ -88,21 +88,21 @@ export class SubstanceService {
 			where: [
 				{
 					substance: 'norcocaine',
-					value: MoreThanOrEqual(0.5),
+					value: MoreThanOrEqual(0.05),
 					sample: {
 						sample_code: sample_code
 					},
 				},
 				{
 					substance: 'cocaethylene',
-					value: MoreThanOrEqual(0.5),
+					value: MoreThanOrEqual(0.05),
 					sample: {
 						sample_code: sample_code
 					},
 				},
 				{
 					substance: 'benzoylecgonine',
-					value: MoreThanOrEqual(0.5),
+					value: MoreThanOrEqual(0.05),
 					sample: {
 						sample_code: sample_code
 					},

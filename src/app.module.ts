@@ -1,29 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Sample } from './sample/entities/sample.entity';
 import { SampleModule } from './sample/sample.module';
-import { Substance } from './substance/entities/substance.entity';
 import { SubstanceModule } from './substance/substance.module';
+import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config'; { }
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { DatabaseModule } from './database.module';
 
 @Module({
 	imports: [
-		TypeOrmModule.forRoot({
-			type: "mysql",
-			host: "localhost",
-			port: 3306,
-			username: "root",
-			password: "root",
-			database: "toxicology-test",
-			entities: [Sample, Substance],
-			logging: true,
-			synchronize: true
-		}),
+		DatabaseModule,
 		SampleModule,
-		SubstanceModule
+		SubstanceModule,
+		UserModule,
+		ConfigModule.forRoot({ isGlobal: true }),
+		AuthModule
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule { }

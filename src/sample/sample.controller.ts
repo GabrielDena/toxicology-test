@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpException, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { SampleService } from './sample.service';
 import { CreateSampleDto } from './dto/create-sample.dto';
-import { validate } from 'class-validator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('samples')
 export class SampleController {
@@ -20,10 +20,5 @@ export class SampleController {
 	@Get(':sample_code')
 	findOne(@Param('sample_code') sample_code: string) {
 		return this.sampleService.findOne(sample_code);
-	}
-
-	@Delete(':sample_code')
-	remove(@Param('sample_code') sample_code: string) {
-		return this.sampleService.remove(sample_code);
 	}
 }
