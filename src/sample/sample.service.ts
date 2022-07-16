@@ -36,6 +36,7 @@ export class SampleService {
 			if (substanceErrors.length > 0)
 				throw substanceErrors[0]
 		})
+
 		const results = await this.substanceService.result(sample);
 
 		// Essa foi a única forma que encontrei para que o saved.result espere o valor ser
@@ -46,11 +47,11 @@ export class SampleService {
 
 		const response: {
 			sample_code: string,
-			results: boolean,
+			results: string,
 			positive_drugs: string[]
 		} = {
 			sample_code: saved.sample_code,
-			results: saved.result,
+			results: saved.result ? 'Positivo' : 'Negativo',
 			positive_drugs: results
 		}
 		return response;
@@ -59,18 +60,22 @@ export class SampleService {
 	async findAll(): Promise<any> {
 		const samples = await this.sampleRepository.find();
 		const response = await Promise.all(samples.map(async sample => {
-			const results = await this.substanceService.result(sample);
 			return {
 				sample_code: sample.sample_code,
-				results: sample.result,
-				positive_drugs: results
+				results: sample.result ? 'Positivo' : 'Negativo'
 			}
 		}))
 		return response;
 	}
 
-	findOne(sample_code: string): Promise<Sample> {
-		return this.sampleRepository.findOneBy({ sample_code });
+	async findOne(sample_code: string): Promise<Object> {
+		const sample = await this.sampleRepository.findOneBy({ sample_code });
+		const results = await this.substanceService.result(sample);
+		// Aqui da mesma forma não consegui fazer com que terminasse de atribuir à results para
+		// depois fazer o retorno.
+		// Achei uma forma, criando uma nova consulta ao banco, forçando ele esperar o término da primeira.
+		await this.sampleRepository.findOneBy({ sample_code })
+		return { sample, results: results };
 	}
 
 	private formatDate() {

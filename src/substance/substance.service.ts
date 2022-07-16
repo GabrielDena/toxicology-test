@@ -59,6 +59,8 @@ export class SubstanceService {
 	async result(sample: Sample): Promise<any[]> {
 		// Decidi usar o return new Promise para tentar corrigir o erro
 		// que estava dando no método create de sample.service.ts
+		// Acredito que seja pela demora da sua execução, por conta das diversas
+		// consultas ao banco.
 		return new Promise(async resolve => {
 			const results = [];
 			const substances = await this.findAllFromSample(sample);
