@@ -16,13 +16,13 @@ export class SampleService {
 
 	async create(createSampleDto: CreateSampleDto): Promise<any> {
 
-		let data = createSampleDto;
+		const data = createSampleDto;
 		data.created_at = this.formatDate();
 		const sample = this.sampleRepository.create(data);
 		const saved = await this.sampleRepository.save(sample)
 		const sample_code = saved.sample_code;
 
-		let substances = [];
+		const substances = [];
 		Object.keys(createSampleDto).forEach(key => {
 			if (key == 'sample_code' || key == 'created_at' || key == 'result') return false
 			substances.push({ substance: key, value: createSampleDto[key], sample_code: sample_code })
