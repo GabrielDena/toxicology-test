@@ -1,39 +1,67 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateSampleDto } from './dto/create-sample.dto';
 import { Sample } from './entities/sample.entity';
-import { Repository } from 'typeorm';
-import { CreateSubstanceDto } from '../substance/dto/create-substance.dto';
+import { SubstanceService } from '../substance/substance.service';
 
 @Injectable()
 export class SampleService {
 
 	constructor(
 		@InjectRepository(Sample)
-		private sampleRepository: Repository<Sample>
+		private sampleRepository: Repository<Sample>,
+		private substanceService: SubstanceService
 	) { }
 
-	async create(createSampleDto: CreateSampleDto) {
-		let results = [];
+	async create(createSampleDto: CreateSampleDto): Promise<any> {
+
+		let data = createSampleDto;
+		data.created_at = this.formatDate();
+		const sample = this.sampleRepository.create(data);
+		const saved = await this.sampleRepository.save(sample)
+		const sample_code = saved.sample_code;
+
 		let substances = [];
 		Object.keys(createSampleDto).forEach(key => {
-			if (key == 'sample_code') return false
-			substances.push({ [key]: createSampleDto[key] })
+			if (key == 'sample_code' || key == 'created_at' || key == 'result') return false
+			substances.push({ substance: key, value: createSampleDto[key], sample_code: sample_code })
 		})
-		substances.forEach(subs => {
-			results.push(this.result(subs, createSampleDto.sample_code))
-		})
-		const date = this.formatDate();
-		const sampleData = {
-			sample_code: createSampleDto.sample_code,
-			created_at: date
+		await this.substanceService.create(substances, saved);
+		const results = await this.substanceService.result(sample);
+
+		// Essa foi a única forma que encontrei para que o saved.result espere o valor ser
+		// atribuído à const results.
+		await this.sampleRepository.save(saved)
+		saved.result = results.length > 0 ? true : false;
+		await this.sampleRepository.save(saved)
+
+		const response: {
+			sample_code: string,
+			created_at: string,
+			results: boolean,
+			positive_drugs: string[]
+		} = {
+			sample_code: saved.sample_code,
+			created_at: saved.created_at,
+			results: saved.result,
+			positive_drugs: results
 		}
-		// const sample = await this.sampleRepository.create(sampleData)
-		return 'This action adds a new sample';
+		return response;
 	}
 
-	findAll(): Promise<Sample[]> {
-		return this.sampleRepository.find();
+	async findAll(): Promise<any> {
+		const samples = await this.sampleRepository.find();
+		const response = await Promise.all(samples.map(async sample => {
+			const results = await this.substanceService.result(sample);
+			return {
+				sample_code: sample.sample_code,
+				created_at: sample.created_at,
+				results: sample.result,
+				positive_drugs: results
+			}
+		}))
+		return response;
 	}
 
 	findOne(sample_code: string): Promise<Sample> {
@@ -57,18 +85,4 @@ export class SampleService {
 		return (year + "-" + month + "-" + days + " " + hours + ":" + minutes + ":" + seconds);
 	}
 
-	private result(createSubstanceDto: CreateSubstanceDto, sample_code: Sample['sample_code']) {
-		const thresholds = {
-			cocaine: 0.5,
-			amphetamine: 0.2,
-			methamphetamine: 0.2,
-			mda: 0.2,
-			mdma: 0.2,
-			thc: 0.05,
-			morphine: 0.2,
-			codeine: 0.2,
-			heroine: 0.2
-		}
-
-	}
 }

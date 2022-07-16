@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { Sample } from '../../sample/entities/sample.entity';
 
 @Entity({ name: 'substances' })
+@Unique(['substance', 'sample'])
 export class Substance {
 	@PrimaryGeneratedColumn()
 	id: number

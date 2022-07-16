@@ -7,10 +7,10 @@ export class Sample {
 	@PrimaryColumn("varchar")
 	sample_code: string
 
-	@Column('datetime')
-	created_at: Date
+	@Column('varchar')
+	created_at: string
 
-	@Column('boolean')
+	@Column('boolean', { default: () => false })
 	result: boolean
 
 	@OneToMany(type => Substance, substance => substance.sample)

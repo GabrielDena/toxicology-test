@@ -8,6 +8,5 @@ export class CreateSubstanceDto {
 	@IsNumber()
 	value: number
 
-	@IsString()
-	sample_code: Sample['sample_code']
+	sample: Sample
 }

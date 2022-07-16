@@ -7,6 +7,12 @@ export class CreateSampleDto {
 	sample_code: string
 
 	@IsOptional()
+	created_at?: string
+
+	@IsOptional()
+	result?: boolean
+
+	@IsOptional()
 	cocaine?: number
 
 	@IsOptional()
