@@ -28,21 +28,19 @@ export class SampleService {
 			substances.push({ substance: key, value: createSampleDto[key], sample_code: sample_code })
 		})
 		const substanceErrors = [];
-		substances.forEach(subs => {
+		await Promise.all(substances.map(async subs => {
 			subs.sample = saved
-			this.substanceService.create(subs)
+			return this.substanceService.create(subs)
 				.catch(e => { substanceErrors.push(e) });
+		})).then(() => {
+			if (substanceErrors.length > 0)
+				throw substanceErrors[0]
 		})
 		const results = await this.substanceService.result(sample);
 
 		// Essa foi a única forma que encontrei para que o saved.result espere o valor ser
 		// atribuído à const results.
-		// Também para esperar o array de erros ser populado antes do throw.
 		await this.sampleRepository.save(saved)
-
-		if (substanceErrors.length > 0)
-			throw substanceErrors[0]
-
 		saved.result = results.length > 0 ? true : false;
 		await this.sampleRepository.save(saved)
 
