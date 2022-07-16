@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Sample } from './sample/entities/sample.entity';
-import { Substance } from './substance/entities/substance.entity';
-import { User } from './user/entities/user.entity';
+import { Sample } from '../sample/entities/sample.entity';
+import { Substance } from '../substance/entities/substance.entity';
+import { User } from '../user/entities/user.entity';
 import { ConfigModule } from '@nestjs/config'; { }
 
 @Module({
@@ -17,8 +17,9 @@ import { ConfigModule } from '@nestjs/config'; { }
 				password: process.env.DB_PASSWORD,
 				database: process.env.DB_DATABASE,
 				entities: [Sample, Substance, User],
-				logging: process.env.DB_LOGGING == 'true' ? true : false,
-				synchronize: process.env.DB_SYNCHRONIZE == 'true' ? true : false
+				dropSchema: process.env.DB_TEST == 'true',
+				logging: process.env.DB_LOGGING == 'true',
+				synchronize: process.env.DB_SYNCHRONIZE == 'true'
 			})
 		})
 	]

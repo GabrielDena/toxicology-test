@@ -2,6 +2,7 @@ import { Controller, UseGuards, Post, Request, Body } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { Public } from './auth/public.decorator';
 import { CreateUserDto } from './user/dto/create-user.dto';
+import { LoginUserDto } from './user/dto/login-user.dto';
 
 @Controller()
 export class AppController {
@@ -9,7 +10,7 @@ export class AppController {
 
 	@Public()
 	@Post('auth/signin')
-	async signin(@Body() user) {
+	async signin(@Body() user: LoginUserDto) {
 		return this.authService.signIn(user);
 	}
 

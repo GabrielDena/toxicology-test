@@ -4,8 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { validate } from 'class-validator';
-import * as argon from 'argon2';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
