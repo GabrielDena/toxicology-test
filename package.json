@@ -8,6 +8,7 @@
 	"scripts": {
 		"db:rm": "docker-compose rm -s -f -v",
 		"db:up": "docker-compose up -d",
+		"db:reset": "yarn db:rm && yarn db:up && yarn  start:dev",
 		"prebuild": "rimraf dist",
 		"build": "nest build",
 		"start": "nest start",

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual } from 'typeorm';
 import { CreateSubstanceDto } from './dto/create-substance.dto';
@@ -25,13 +25,16 @@ export class SubstanceService {
 		private substanceRepository: Repository<Substance>
 	) { }
 
-	async create(substances: CreateSubstanceDto[], sample: Sample) {
-		substances.forEach(subs => {
-			subs.sample = sample
-			const substance = this.substanceRepository.create(subs);
-			this.substanceRepository.save(substance)
-		})
-		return this.findAllFromSample(sample);
+	async create(substance: CreateSubstanceDto) {
+		return this.substanceRepository.save(substance)
+			.catch(e => {
+				if (e.code == 'ER_DUP_ENTRY') {
+					throw new BadRequestException(
+						'Substância já cadastrada.',
+					);
+				}
+				return e;
+			});
 	}
 
 	async findAllFromSample(sample: Sample) {

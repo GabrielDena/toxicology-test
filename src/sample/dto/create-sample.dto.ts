@@ -40,14 +40,14 @@ export class CreateSampleDto {
 	heroine?: number
 
 	@ValidateIf(o => o.cocaine != null)
-	@IsNotEmpty()
+	@IsNotEmpty({ message: 'Benzoylecgonine obrigatória se cocaína cadastrada.' })
 	benzoylecgonine?: number
 
 	@ValidateIf(o => o.cocaine != null)
-	@IsNotEmpty()
+	@IsNotEmpty({ message: 'Cocaethylene obrigatória se cocaína cadastrada.' })
 	cocaethylene?: number
 
 	@ValidateIf(o => o.cocaine != null)
-	@IsNotEmpty()
+	@IsNotEmpty({ message: 'Norcocaine obrigatória se cocaína cadastrada.' })
 	norcocaine?: number
 }
