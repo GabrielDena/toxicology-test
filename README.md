@@ -22,6 +22,9 @@ $ yarn install
 ## Executando aplicação
 
 - Copiar .env.example e preencher com informações do banco.
+```bash
+$ cp .env.example .env
+```
 - Subir o docker com o banco:
 ```bash
 # subir banco
