@@ -36,7 +36,7 @@ export class AuthService {
 		createUserDto.password = await argon.hash(createUserDto.password);
 		try {
 			const user = await this.userService.create(createUserDto);
-			return this.signToken(user.id, user.email);
+			return await this.signToken(user.id, user.email);
 		} catch (e) {
 			throw e
 		}

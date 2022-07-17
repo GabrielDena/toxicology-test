@@ -2,72 +2,80 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descrição
+- Api para análise de amostras toxicológicas, ela recebe a amostra e testa, contra um banco interno, se a concentração das substâncias é um retorno positivo ou negativo. 
+- Armazena todas as amostras em um banco.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologias usadas
+- NodeJs v16.15
+- Yarn v1.22
+- Docker-compose v3.8
+- MariaDB v10.7
+- NestJS
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## Instalação
 
 ```bash
-$ npm install
+$ yarn install
 ```
 
-## Running the app
+## Executando aplicação
 
+- Copiar .env.example e preencher com informações do banco.
+- Subir o docker com o banco:
+```bash
+# subir banco
+$ yarn db:up
+```
+- Após banco estar funcionando rodar um dos seguintes comandos:
 ```bash
 # development
-$ npm run start
+$ yarn start
 
 # watch mode
-$ npm run start:dev
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
-## Test
+## Testes
 
+- Para testes alterar .env para DB_TEST=true, dessa forma ele irá deletar as tabelas em cada teste.
+- __NÃO RODAR EM PRODUÇÃO__
+- De preferência utilizar um banco diferente para os testes.
 ```bash
-# unit tests
-$ npm run test
-
 # e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ yarn test:e2e
 ```
+# Instruções
 
-## Support
+## Inserir amostra
+- Para inserir uma amostra enviar uma requisição POST para /samples com os dados no seguinte formato:
+```JSON
+{
+    "sample_code": "02383335",
+    "cocaine": 0.678,
+    "amphetamine": 0.1,
+    "methamphetamine": 0.1,
+    "mda": 0.1,
+    "mdma": 0,
+    "thc": 0.1,
+    "morphine": 0.1,
+    "codeine": 0.1,
+    "heroine": 0.1,
+    "benzoylecgonine": 1,
+    "cocaethylene": 0,
+    "norcocaine": 0
+}
+```
+- Os dados podem ser enviados como x-www-form-urlencoded utilizando os mesmos nomes.
+- Ele irá retornar o código da amostra, se é positiva e as substâncias positivas.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Ver todas as amostras cadastradas
+- Para ver amostras cadastradas fazer uma requisição GET para /samples.
+- Ele irá retornar todas as amostras com código, data cadastrada e resultado.
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Ver uma amostra
+- Para ver uma amostra específica fazer uma requisição GET para /samples/:codigo_amostra.
+- Irá retornar a amostra com código, resultado e as substâncias positivas.

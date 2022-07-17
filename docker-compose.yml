@@ -7,5 +7,5 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: toxicology-test
-        # volumes:
-        #     - './db:/var/lib/mysql'
+        volumes:
+            - './db:/var/lib/mysql'
