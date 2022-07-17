@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSampleDto } from './dto/create-sample.dto';
@@ -15,7 +15,6 @@ export class SampleService {
 	) { }
 
 	async create(createSampleDto: CreateSampleDto): Promise<any> {
-
 		const data = createSampleDto;
 		data.created_at = this.formatDate();
 		const sample = this.sampleRepository.create(data);
@@ -38,7 +37,6 @@ export class SampleService {
 		})
 
 		const results = await this.substanceService.result(sample);
-
 		// Essa foi a única forma que encontrei para que o saved.result espere o valor ser
 		// atribuído à const results.
 		await this.sampleRepository.save(saved)
@@ -70,12 +68,22 @@ export class SampleService {
 
 	async findOne(sample_code: string): Promise<Object> {
 		const sample = await this.sampleRepository.findOneBy({ sample_code });
+		if (!sample) {
+			throw new BadRequestException('Código inválido.');
+		}
+		const response = {
+			sample: {
+				sample_code: sample.sample_code,
+				created_at: sample.created_at,
+				result: sample.result ? 'Positivo' : 'Negativo'
+			}
+		}
 		const results = await this.substanceService.result(sample);
 		// Aqui da mesma forma não consegui fazer com que terminasse de atribuir à results para
 		// depois fazer o retorno.
 		// Achei uma forma, criando uma nova consulta ao banco, forçando ele esperar o término da primeira.
 		await this.sampleRepository.findOneBy({ sample_code })
-		return { sample, results: results };
+		return { response, results: results };
 	}
 
 	private formatDate() {

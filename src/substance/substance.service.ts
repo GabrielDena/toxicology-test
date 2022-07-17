@@ -8,7 +8,7 @@ import { Sample } from '../sample/entities/sample.entity';
 @Injectable()
 export class SubstanceService {
 
-	thresholds = {
+	private thresholds = {
 		cocaine: 0.5,
 		amphetamine: 0.2,
 		methamphetamine: 0.2,
@@ -18,6 +18,18 @@ export class SubstanceService {
 		morphine: 0.2,
 		codeine: 0.2,
 		heroine: 0.2
+	}
+
+	private substanceDictionary = {
+		cocaine: 'Cocaína',
+		amphetamine: 'Anfetamina',
+		methamphetamine: 'Metanfetamina',
+		mda: 'MDA',
+		mdma: 'MDMA',
+		thc: 'THC',
+		morphine: 'Morfina',
+		codeine: 'Codeína',
+		heroine: 'Heroína'
 	}
 
 	constructor(
@@ -37,9 +49,14 @@ export class SubstanceService {
 			});
 	}
 
-	async findAllFromSample(sample: Sample) {
-		const sample_code = sample.sample_code
-		const substances = this.substanceRepository.find({
+	async findAllFromSample(sample_code: string) {
+		return await this.substanceRepository.find({
+			select: {
+				value: false,
+				sample: {
+					sample_code: false
+				}
+			},
 			relations: {
 				sample: true
 			},
@@ -49,11 +66,6 @@ export class SubstanceService {
 				}
 			}
 		})
-		return substances;
-	}
-
-	remove(id: number) {
-		return `This action removes a #${id} substance`;
 	}
 
 	async result(sample: Sample): Promise<any[]> {
@@ -63,17 +75,17 @@ export class SubstanceService {
 		// consultas ao banco.
 		return new Promise(async resolve => {
 			const results = [];
-			const substances = await this.findAllFromSample(sample);
+			const substances = await this.findAllFromSample(sample.sample_code);
 			Object.entries(this.thresholds).forEach(async threshold => {
 				substances.forEach(async sub => {
 					if (sub.substance == threshold[0] && sub.value >= threshold[1]) {
 						if (sub.substance == 'cocaine') {
 							let cocaineRule = await this.cocaineRule(sample.sample_code)
 							if (cocaineRule.length > 0) {
-								results.push(sub.substance)
+								results.push(this.substanceDictionary[sub.substance])
 							}
 						} else {
-							results.push(sub.substance)
+							results.push(this.substanceDictionary[sub.substance])
 						}
 					}
 				})

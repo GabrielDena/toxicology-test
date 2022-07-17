@@ -214,6 +214,15 @@ describe('App (e2e)', () => {
 		})
 
 		describe('Get Sample', () => {
+			it('should throw if there is no sample with code', () => {
+				return pactum
+					.spec()
+					.get('/samples/12345')
+					.withHeaders({
+						Authorization: 'Bearer $S{userAt}'
+					})
+					.expectStatus(400)
+			})
 			it('should get a sample', () => {
 				return pactum
 					.spec()

@@ -1,8 +1,6 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { SampleService } from './sample.service';
 import { CreateSampleDto } from './dto/create-sample.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-
 @Controller('samples')
 export class SampleController {
 	constructor(private readonly sampleService: SampleService) { }
@@ -18,7 +16,7 @@ export class SampleController {
 	}
 
 	@Get(':sample_code')
-	findOne(@Param('sample_code') sample_code: string) {
+	async findOne(@Param('sample_code') sample_code: string) {
 		return this.sampleService.findOne(sample_code);
 	}
 }
