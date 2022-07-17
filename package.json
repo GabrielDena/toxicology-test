@@ -2,7 +2,7 @@
 	"name": "toxicology-test",
 	"version": "0.0.1",
 	"description": "",
-	"author": "",
+	"author": "Gabriel Dena",
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
@@ -85,5 +85,8 @@
 	},
 	"_moduleAliases": {
 		"src": "dist"
+	},
+	"engines": {
+		"node": "16.x"
 	}
 }
